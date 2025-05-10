@@ -119,8 +119,13 @@ namespace CryptoExchange.Net.SharedApis
         /// <param name="name">Parameter name</param>
         public static T? GetValue<T>(ExchangeParameters? exchangeParameters, string exchange, string name)
         {
-            T? value;
-            if (exchangeParameters == null)
+            T? value = default;
+            if(exchangeParameters != null)
+            {
+                value = exchangeParameters.GetValue<T>(exchange, name);
+            }
+
+            if (value == null)
             {
                 var parameter = _staticParameters.SingleOrDefault(x => x.Exchange == exchange && x.Name == name);
                 if (parameter == null)
@@ -138,11 +143,7 @@ namespace CryptoExchange.Net.SharedApis
                 {
                     throw new ArgumentException("Incorrect type for parameter, expected " + typeof(T).Name, name);
                 }
-            }
-            else
-            {
-                value = exchangeParameters.GetValue<T>(exchange, name);
-            }
+            } 
 
             return value;
         }
