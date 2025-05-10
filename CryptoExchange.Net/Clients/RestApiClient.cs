@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -730,7 +731,11 @@ namespace CryptoExchange.Net.Clients
                     return new WebCallResult<T>(response.StatusCode, response.ResponseHeaders, sw.Elapsed, responseLength, OutputOriginalData ? accessor.GetOriginalString() : null, request.RequestId, request.Uri.ToString(), request.Content, request.Method, request.GetHeaders(), ResultDataSource.Server, default, parsedError);
                 }
 
-                var deserializeResult = accessor.Deserialize<T>();
+                var vk = accessor.GetNodeType(); 
+
+                var deserializeResult = vk == Converters.MessageParsing.NodeType.Array && typeof(T).GetInterface("IEnumerable") == null
+                    ? new CallResult<T>(accessor.Deserialize<T[]>().Data[0])
+                    : accessor.Deserialize<T>();
                 return new WebCallResult<T>(response.StatusCode, response.ResponseHeaders, sw.Elapsed, responseLength, OutputOriginalData ? accessor.GetOriginalString() : null, request.RequestId, request.Uri.ToString(), request.Content, request.Method, request.GetHeaders(), ResultDataSource.Server, deserializeResult.Data, deserializeResult.Error);
             }
             catch (HttpRequestException requestException)
