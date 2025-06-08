@@ -54,8 +54,8 @@ namespace CryptoExchange.Net.SharedApis
             if (MinLimit.HasValue && request.Limit.Value < MinLimit)
                 return new ArgumentError($"Min limit is {MaxLimit}");
 
-            if (SupportedLimits != null && !SupportedLimits.Contains(request.Limit.Value))
-                return new ArgumentError($"Limit should be one of " + string.Join(", ", SupportedLimits));
+            //if (SupportedLimits != null && !SupportedLimits.Contains(request.Limit.Value))
+            //    return new ArgumentError($"Limit should be one of " + string.Join(", ", SupportedLimits));
 
             return base.ValidateRequest(exchange, request, tradingMode, supportedApiTypes);
         }
